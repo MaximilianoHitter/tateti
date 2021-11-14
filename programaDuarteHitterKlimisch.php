@@ -213,7 +213,51 @@ function primerGanado($todosJuegos, $nombreJugador)
 
 }
 
-//Funcion para obtener resumen, se pasa por parametro la coleccion y el nombre y se muestran todos los datos de ese nombre (7)
+
+/** Funcion para obtener resumen, se pasa por parametro la coleccion y el nombre y se muestran todos los datos de ese nombre (7)
+ * @param array $todosLosJuegos
+ * @param string $nombreResumen
+ * @return void
+ */
+function obtenerResumen($todosLosJuegos, $nombreResumen)
+{
+    /*busca el resumen y lo imprime por pantalla
+    int $gana, $pierde, $empata, $puntos, $k
+    */
+    $gana = 0;
+    $pierde = 0;
+    $empata = 0;
+    $puntos = 0;
+    for ($k = 0; $k < count($todosLosJuegos); $k++) {
+        if ($todosLosJuegos[$k]['jugadorCruz'] == $nombreResumen) {
+            if ($todosLosJuegos[$k]['puntosCruz'] > $todosLosJuegos[$k]['puntosCirculo']) {
+                $gana++;
+            } elseif ($todosLosJuegos[$k]['puntosCruz'] == $todosLosJuegos[$k]['puntosCirculo']) {
+                $empata++;
+            } elseif ($todosLosJuegos[$k]['puntosCruz'] < $todosLosJuegos[$k]['puntosCirculo']) {
+                $pierde++;
+            }
+            $puntos += $todosLosJuegos[$k]['puntosCruz'];
+        } elseif ($todosLosJuegos[$k]['jugadorCirculo'] == $nombreResumen) {
+            if ($todosLosJuegos[$k]['puntosCirculo'] > $todosLosJuegos[$k]['puntosCruz']) {
+                $gana++;
+            } elseif ($todosLosJuegos[$k]['puntosCirculo'] == $todosLosJuegos[$k]['puntosCruz']) {
+                $empata++;
+            } elseif ($todosLosJuegos[$k]['puntosCirculo'] < $todosLosJuegos[$k]['puntosCruz']) {
+                $pierde++;
+            }
+            $puntos += $todosLosJuegos[$k]['puntosCirculo'];
+        }
+    }
+    //Presentar por pantalla
+    echo "***********************************\n";
+    echo "Jugador: " . $nombreResumen . "\n";
+    echo "Ganó: " . $gana . " juegos\n";
+    echo "Perdió: " . $pierde . " juegos\n";
+    echo "Empató: " . $empata . " juegos\n";
+    echo "Total de puntos acumulados: " . $puntos . " puntos\n";
+    echo "***********************************\n";
+}
 
 
 /** Funcion pedir valor de simbolo, validarlo y devolverlo (8)
@@ -290,9 +334,65 @@ function ganadosSegunSimbolo($pocosJuegos, $simboloElegido)
     return $numeroSimbolo;
 }
 
+/** Función de comparación para uasort, esta función toma los parametros pasados por la función uasort, los compara y devuelve 0, 1 o -1
+ * @param array $a
+ * @param array $b
+ * @return int
+*/
+function cmp($a,$b)
+{
+    //int $comparador
+    $comparador = 0;
+    if ($a['jugadorCirculo'] < $b['jugadorCirculo']){
+        $comparador = -1;
+    }elseif ($b['jugadorCirculo'] < $a['jugadorCirculo']){
+        $comparador = 1;
+    }
+    return $comparador;
+}
 
-//Función para obtener los juegos del jugador O (11)
 
+/** Función para obtener los juegos del jugador O (11)
+ * @param array $algunosJuegos
+ * @return void
+ */
+function juegosOrdenadosDeO($algunosJuegos){
+    //Ordenar y mostrar los juegos ordenados por el nombre del jugador O
+    /* La función uasort sirve para ordenamiento de arrays, se le pasan como parámetro un array y el nombre de una función que realice la
+    debida comparación. Dentro de la función se debe hacer referencia a qué campos del array se desean comparar, y una vez realizada la comparación,
+    la función retorna 0 si ambos campos son iguales (nuestra función compara qué string es mayor), -1 si el segundo campo es mayor y 1 si el primer 
+    campo es mayor, y la funcion uasort obtiene ese parámetro y decide si mantener el orden de estos dos campos o modificarlo. */
+
+    /**La función print_r se utiliza para mostrar por pantalla el contenido de arrays, sería similar a armar una estructura como un for/foreach para 
+    mostrar dicho array(si fuese indexado), pero la función print_r realiza la impresión de cada linea del array sin necesidad de pasar como parámetro 
+    el index o campo asociativo a mostrar 
+    */
+
+
+    /**DESCRIPCION DE LA FUNCION uasort SEGUN EL MANUAL DE PHP */
+
+    /** uasort : ordena una matriz con una función de comparación definida por el usuario y mantiene la asociación de índices. Ordena arrayen su lugar de 
+     * modo que sus claves mantengan su correlación con los valores con los que están asociados, utilizando una función de comparación definida por el usuario. 
+     * Esto se utiliza principalmente al ordenar matrices asociativas donde el orden real de los elementos es significativo.
+     * PARAMETROS:
+                    * array : La matriz de entrada
+                    *callback: La función de comparación debe devolver un número entero menor, igual o mayor que cero si el primer argumento se considera
+                    *respectivamente menor, igual o mayor que el segundo.
+     * VALORES:
+                    * Siempre vuelve true.
+     */
+        /**DESCRIPCION DE LA FUNCION print_r SEGUN EL MANUAL DE PHP */
+
+    /** print_r : imprime información legible por humanos sobre una variable.
+     * PARAMETROS: 
+                    * value: La expresión que se imprimirá 
+     */
+    uasort($algunosJuegos, 'cmp');
+    print_r($algunosJuegos);
+    /*foreach ($algunosJuegos as $key => $value) {
+        mostrarJuego($key, $algunosJuegos);
+    }*/
+}
 
 /**************************************/
 /*********** PROGRAMA PRINCIPAL *******/
@@ -369,7 +469,25 @@ do {
             case 5:
                 /** Mostrar resumen de jugador*/
                 if (count($jugadosCrudo) > 0) {
-                    //Aca va el codigo
+                    echo "Ingrese el nombre de un jugador para ver su resumen: \n";
+                    $jugadorResumen = trim(fgets(STDIN));
+                    $jugadorResumen = strtoupper($jugadorResumen);
+                    //Comprobar si el jugador existe
+                    $l = 0;
+                    $bandera = true;
+                    do {
+                        if ($jugadosCrudo[$l]['jugadorCruz'] == $jugadorResumen) {
+                           $bandera = false;
+                        } elseif ($jugadosCrudo[$l]['jugadorCirculo'] == $jugadorResumen) {
+                            $bandera = false;
+                        }
+                        $l++;
+                    } while ($bandera && ($l < count($jugadosCrudo)));
+                    if ($bandera) {
+                        echo "El jugador no posee registros.\n";
+                    } else {
+                        obtenerResumen($jugadosCrudo, $jugadorResumen);
+                    }
                 } else {
                     echo "No hay ningún juego registrado.\n";
                 }
@@ -377,7 +495,7 @@ do {
             case 6:
                 /** Mostrar listado de juegos ordenado por jugador O */
                 if (count($jugadosCrudo) > 0) {
-                    //Aca va el codigo
+                    juegosOrdenadosDeO($jugadosCrudo);
                 } else {
                     echo "No hay ningún juego registrado.\n";
                 }
