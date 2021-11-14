@@ -216,7 +216,33 @@ function primerGanado($todosJuegos, $nombreJugador)
 //Funcion para obtener resumen, se pasa por parametro la coleccion y el nombre y se muestran todos los datos de ese nombre (7)
 
 
-//Funcion pedir valor de simbolo, validarlo y devolverlo (8)
+/** Funcion pedir valor de simbolo, validarlo y devolverlo (8)
+ * @param void
+ * @return string
+ */
+function obtenerSimbolo()
+{
+    /*pedir simbolo, validarlo y devolverlo
+    boolean $validado
+    string $simbol
+    */
+    echo "Por favor ingrese un símbolo, sea X o O:\n";
+    $validado = true;
+    $simbol = trim(fgets(STDIN));
+    $simbol = strtoupper($simbol);
+    while ($validado) {
+        if ($simbol == "X") {
+            $validado = false;
+        } elseif ($simbol == "O") {
+            $validado = false;
+        } else {
+            echo "Ingrese un caracter válido: \n";
+            $simbol = trim(fgets(STDIN));
+            $simbol = strtoupper($simbol);
+        }
+    }
+    return $simbol;
+}
 
 
 /** Función retornar juegos ganados/perdidos, se pasa por parametro la coleccion de juegos (9)
