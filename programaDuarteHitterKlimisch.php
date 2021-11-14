@@ -7,7 +7,29 @@ include_once("tateti.php");
 
 /* Apellido, Nombre. Legajo. Carrera. mail. Usuario Github */
 /* ... COMPLETAR ... */
-/*  Klimisch, Marcia Leonela. FAI-3573. TUDW. marcia.klimisch@est.fi.uncoma.edu.ar. Khaleesi89.
+/*$datos[0]= array('apellido' => 'Klimisch',
+                   'nombrePila' => 'Marcia Leonela',
+                   'legajo' => 'FAI-3573',
+                   'carrera' => 'TUDW',
+                   'mail' => 'marcia.klimisch@est.fi.uncoma.edu.ar',
+                   'github' => 'Khaleesi89'
+                   );
+  $datos[1]= array('apellido' => 'Duarte',
+                   'nombrePila' => 'Micaela Florencia',
+                   'legajo' => 'FAI-3252',
+                   'carrera' => 'TUDW',
+                   'mail' => 'micaela.duarte@est.fi.uncoma.edu.ar',
+                   'github' => 'micaeladuarte'
+                   );
+  $datos[2]= array('apellido' => 'Hitter',
+                   'nombrePila' => 'Maximiliano Ariel',
+                   'legajo' => 'FAI-3523',
+                   'carrera' => 'TUDW',
+                   'mail' => 'maximiliano.hitter@est.fi.uncoma.edu.ar',
+                   'github' => 'MaximilianoHitter'
+                   );
+
+    Klimisch, Marcia Leonela. FAI-3573. TUDW. marcia.klimisch@est.fi.uncoma.edu.ar. Khaleesi89.
     Duarte, Micaela Florencia. FAI-3252. TUDW. micaela.duarte@est.fi.uncoma.edu.ar. micaeladuarte.
     Hitter, Maximiliano Ariel. FAI-3523. TUDW. maximiliano.hitter@est.fi.uncoma.edu.ar. MaximilianoHitter. 
 */
