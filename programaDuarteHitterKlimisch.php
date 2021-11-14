@@ -183,8 +183,35 @@ function agregarJuego($coleccion, $seleccionado)
     return $coleccion;
 }
 
-//Funcion para obtener primer juego ganado, se pasa por parametro una coleccion y un nombre, y se devuelve la posicion del array donde se encontro como ganador ese nombre (6)
 
+/** Funcion para obtener primer juego ganado, se pasa por parametro una coleccion y un nombre, y se devuelve la posicion del array donde se encontro como ganador ese nombre (6)
+ * @param array $todosJuegos
+ * @param string $nombreJugador
+ * @return int
+ */
+function primerGanado($todosJuegos, $nombreJugador)
+{
+    /*retornar número de indice del jugador que gano o sino retornar -1
+    int $cont, $numGanador
+    boolean $flag1
+    */
+    $cont = 0;
+    $flag1 = false;
+    $numGanador = -1;
+    do{
+        if ($nombreJugador == $todosJuegos[$cont]['jugadorCruz'] && ($todosJuegos[$cont]['puntosCruz'] > $todosJuegos[$cont]['puntosCirculo'])) {
+            $flag1 = true;
+            $numGanador = $cont;
+        }elseif($nombreJugador == $todosJuegos[$cont]['jugadorCirculo'] && ($todosJuegos[$cont]['puntosCirculo'] > $todosJuegos[$cont]['puntosCruz'])){
+            $flag1 = true;
+            $numGanador = $cont;
+        }
+        $cont++;
+    }while(($cont < (count($todosJuegos))) && $flag1);
+
+    return $numGanador;
+
+}
 
 //Funcion para obtener resumen, se pasa por parametro la coleccion y el nombre y se muestran todos los datos de ese nombre (7)
 
@@ -192,10 +219,50 @@ function agregarJuego($coleccion, $seleccionado)
 //Funcion pedir valor de simbolo, validarlo y devolverlo (8)
 
 
-//Función retornar juegos ganados/perdidos, se pasa por parametro la coleccion de juegos (9)
+/** Función retornar juegos ganados/perdidos, se pasa por parametro la coleccion de juegos (9)
+ * @param array $muchosJuegos
+ * @return int
+ */
+function obtenerGanados($muchosJuegos)
+{
+    /*Devolver array con los juegos con ganador/perdedor solo
+    int $ganados, $t
+    */
+    $ganados = 0;
+    for ($t = 0; $t < count($muchosJuegos); $t++) {
+        if ($muchosJuegos[$t]['puntosCruz'] !=1 && $muchosJuegos[$t]['puntosCirculo'] !=1) {
+            $ganados++;
+        }
+    }
+    return $ganados;
+}
 
-
-//Función para obtener la cantidad de ganados segun un simbolo (10)
+/** Función para obtener la cantidad de ganados segun un simbolo (10)
+ * @param array $pocosJuegos
+ * @param string $simboloElegido
+ * @return int
+ */
+function ganadosSegunSimbolo($pocosJuegos, $simboloElegido)
+{
+    /*devuelve la cantidad de juegos ganados segun simbolo
+    int $contadorX, $contadorO, $numeroSimbolo, $j
+    */
+    $contadorX = 0;
+    $contadorO = 0;
+    for ($j = 0; $j < count($pocosJuegos); $j++) {
+        if ($pocosJuegos[$j]['puntosCruz'] > $pocosJuegos[$j]['puntosCirculo']) {
+            $contadorX++;
+        } elseif ($pocosJuegos[$j]['puntosCirculo'] > $pocosJuegos[$j]['puntosCruz']) {
+            $contadorO++;
+        }
+    }
+    if ($simboloElegido == "X") {
+        $numeroSimbolo = $contadorX;
+    } elseif ($simboloElegido == "O") {
+        $numeroSimbolo = $contadorO;
+    }
+    return $numeroSimbolo;
+}
 
 
 //Función para obtener los juegos del jugador O (11)
@@ -205,64 +272,76 @@ function agregarJuego($coleccion, $seleccionado)
 /*********** PROGRAMA PRINCIPAL *******/
 /**************************************/
 
-//Declaración de variables:
-/*  Array $juego, $jugadosCrudo
-    int $numJuego, $opcion, $cont, $valorUno, $valorDos, $soloG, $cantGanadosSimbol, $l
-    string $nombreGanador, $simbolo, $jugadorResumen
-    boolean $salir, $bandera
-    float $promedioSimbolo
+/** Declaración de variables: */
+/** Array $juego, $jugados, $jugadosCrudo
+* int $numJuego, $i, $opcion, $j, $cont, $valorUno , $valorDos ,$soloGyP, $cantGanadosSimbol, $l,
+* string $nombreGanador , $simbolo, $jugadorResumen, 
+* boolean $flag, $salir,  $bandera, 
+* float $promedioSimbolo, 
 */
-//Inicialización de variables:
+/** Inicialización de variables: */
 $jugadosCrudo = [];
 $juego = [];
 $salir = true;
 
-//Proceso:
+/** Proceso: */
 $jugadosCrudo = cargarJuegos();
-//Switch para la botonera o menu selector
+/**Switch para la botonera o menu selector */
 
 do {
     $opcion = seleccionarOpcion();
 
     switch ($opcion) {
         case 1:
-            //Jugar tateti 
+            /**Jugar tateti */
             $juego = jugar();
             imprimirResultado($juego);
-            //Guardar resultado en crudo
+            /** Guardar resultado en crudo*/
             $jugadosCrudo = agregarJuego($jugadosCrudo, $juego);
             break;
         case 2:
-            //Mostrar un juego
+            /** Mostrar un juego*/
             if (count($jugadosCrudo) > 0) {
                 echo "Ingrese el número de juego que desea ver: \n";
                 $valorUno = 0;
                 $valorDos = (count($jugadosCrudo)-1);
                 $numJuego = validarValor($valorUno, $valorDos);
-                //Mostrar el juego pedido
+                /** Mostrar el juego pedido */
                 mostrarJuego($numJuego, $jugadosCrudo);
             } else {
                 echo "No hay ningún juego registrado.\n";
             }
             break;
             case 3:
-                //Mostrar el primer juego ganador
+                /** Mostrar el primer juego ganador*/
                 if (count($jugadosCrudo) > 0) {
-                    //Aca va el codigo
+                    echo "Ingrese el nombre del Jugador a buscar: ";
+                    $nombreGanador = trim(fgets(STDIN));
+                    $nombreGanador = strtoupper($nombreGanador);
+                    $numeroDeGanador = primerGanado($jugadosCrudo, $nombreGanador);
+                    if ($numeroDeGanador >= 0) {
+                        mostrarJuego($numeroDeGanador, $jugadosCrudo);
+                    } else {
+                        echo "El jugador " . $nombreGanador . " no ha ganado ningún juego.\n";
+                    }
                 } else {
                     echo "No hay ningún juego registrado.\n";
                 }
                 break;
             case 4:
-                //Mostrar porcentaje de juegos ganados
+                /** Mostrar porcentaje de juegos ganados*/ 
                 if (count($jugadosCrudo) > 0) {
-                    //Aca va el codigo
+                    $simbolo = obtenerSimbolo();
+                    $soloG = obtenerGanados($jugadosCrudo);
+                    $cantGanadosSimbol = ganadosSegunSimbolo($jugadosCrudo, $simbolo);
+                    $promedioSimbolo = ($cantGanadosSimbol / $soloG) * 100;
+                    echo $simbolo . " ganó el " . $promedioSimbolo . "% de las partidas ganadas.\n";
                 } else {
                     echo "No hay ningún juego registrado.\n";
                 }
                 break;
             case 5:
-                //Mostrar resumen de jugador
+                /** Mostrar resumen de jugador*/
                 if (count($jugadosCrudo) > 0) {
                     //Aca va el codigo
                 } else {
@@ -270,7 +349,7 @@ do {
                 }
                 break;
             case 6:
-                //Mostrar listado de juegos ordenado por jugador O
+                /** Mostrar listado de juegos ordenado por jugador O */
                 if (count($jugadosCrudo) > 0) {
                     //Aca va el codigo
                 } else {
@@ -278,7 +357,7 @@ do {
                 }
                 break;
             case 7:
-                //salir 
+                /**salir*/
                 $salir = false;
                 break;
             default:
