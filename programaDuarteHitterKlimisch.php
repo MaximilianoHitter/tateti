@@ -132,7 +132,7 @@ function validarValor($valor1, $valor2)
      */
     echo "Ingrese un número entre el " . $valor1 . " y el " . $valor2 . "\n";
     $seleccion = trim(fgets(STDIN));
-    while ($seleccion > $valor2 || $seleccion < $valor1) {
+    while (($seleccion > $valor2 || $seleccion < $valor1) && !is_numeric($seleccion)) {
         echo "Número inválido, debe estar entre " . $valor1 . " y el " . $valor2 . "\n";
         $seleccion = trim(fgets(STDIN));
     }
