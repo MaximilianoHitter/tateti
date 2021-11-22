@@ -229,7 +229,7 @@ function primerGanado($todosJuegos, $nombreJugador)
             $numGanador = $cont;
         }
         $cont++;
-    }while(($cont < (count($todosJuegos))) && $flag1);
+    }while(($cont < (count($todosJuegos))) && !$flag1);
 
     return $numGanador;
 
