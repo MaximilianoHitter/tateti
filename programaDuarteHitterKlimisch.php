@@ -317,7 +317,7 @@ function obtenerSimbolo()
  */
 function obtenerGanados($muchosJuegos)
 {
-    /*Devolver array con los juegos con ganador/perdedor solo
+    /*Devolver cantidad de juegos ganados
     int $ganados, $t
     */
     $ganados = 0;
