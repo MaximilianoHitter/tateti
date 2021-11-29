@@ -118,21 +118,6 @@ function cargarJuegos()
         'puntosCirculo' => '6'
     );
     $juntarColeccion = agregarJuego($juntarColeccion, $unJuego);
-
-    
-    $jg1 = ["jugadorCruz" => "AMARILIS", "jugadorCirculo" => "MILOS",    "puntosCruz" => 1, "puntosCirculo" => 1];
-    $jg2 = ["jugadorCruz" => "ZENDA",    "jugadorCirculo" => "AMARILIS", "puntosCruz" => 3, "puntosCirculo" => 0];
-    $jg3 = ["jugadorCruz" => "ZENDA",    "jugadorCirculo" => "MILOS",    "puntosCruz" => 0, "puntosCirculo" => 4];
-    $jg4 = ["jugadorCruz" => "CALIXTO",  "jugadorCirculo" => "TRUMAN",   "puntosCruz" => 1, "puntosCirculo" => 1];
-    $jg5 = ["jugadorCruz" => "AMARILIS", "jugadorCirculo" => "MILOS",    "puntosCruz" => 5, "puntosCirculo" => 0];
-    $jg6 = ["jugadorCruz" => "FEDORA",   "jugadorCirculo" => "CALIXTO",  "puntosCruz" => 0, "puntosCirculo" => 3];
-    $jg7 = ["jugadorCruz" => "TRUMAN",   "jugadorCirculo" => "AMARILIS", "puntosCruz" => 4, "puntosCirculo" => 0];
-    $jg8 = ["jugadorCruz" => "CALIXTO",  "jugadorCirculo" => "TRUMAN",   "puntosCruz" => 1, "puntosCirculo" => 1];
-    $jg9 = ["jugadorCruz" => "TRUMAN",   "jugadorCirculo" => "FEDORA",   "puntosCruz" => 2, "puntosCirculo" => 0];
-    $jg10 = ["jugadorCruz" => "MILOS",    "jugadorCirculo" => "ZENDA",   "puntosCruz" => 1, "puntosCirculo" => 1];
-
-    array_push($juntarColeccion, $jg1, $jg2, $jg3, $jg4, $jg5, $jg6, $jg7, $jg8, $jg9, $jg10);
-
     return $juntarColeccion;
 }
 
@@ -244,7 +229,7 @@ function primerGanado($todosJuegos, $nombreJugador)
             $numGanador = $cont;
         }
         $cont++;
-    }while(($cont < (count($todosJuegos))) && !$flag1);
+    }while(($cont < (count($todosJuegos))) && $flag1);
 
     return $numGanador;
 
@@ -254,13 +239,12 @@ function primerGanado($todosJuegos, $nombreJugador)
 /** Funcion para obtener resumen, se pasa por parametro la coleccion y el nombre y se muestran todos los datos de ese nombre (7)
  * @param array $todosLosJuegos
  * @param string $nombreResumen
- * @return array
+ * @return void
  */
 function obtenerResumen($todosLosJuegos, $nombreResumen)
 {
     /*busca el resumen y lo imprime por pantalla
     int $gana, $pierde, $empata, $puntos, $k
-    array $resumenJugador
     */
     $gana = 0;
     $pierde = 0;
@@ -287,15 +271,14 @@ function obtenerResumen($todosLosJuegos, $nombreResumen)
             $puntos += $todosLosJuegos[$k]['puntosCirculo'];
         }
     }
-    $resumenJugador = [];
-    $resumenJugador = [
-        'jugador' => $nombreResumen,
-        'gano' => $gana,
-        'perdio' => $pierde,
-        'empato' => $empata,
-        'puntos' => $puntos,
-    ];
-    return $resumenJugador;
+    //Presentar por pantalla
+    echo "***********************************\n";
+    echo "Jugador: " . $nombreResumen . "\n";
+    echo "Ganó: " . $gana . " juegos\n";
+    echo "Perdió: " . $pierde . " juegos\n";
+    echo "Empató: " . $empata . " juegos\n";
+    echo "Total de puntos acumulados: " . $puntos . " puntos\n";
+    echo "***********************************\n";
 }
 
 
@@ -334,7 +317,7 @@ function obtenerSimbolo()
  */
 function obtenerGanados($muchosJuegos)
 {
-    /*Devolver cantidad de juegos ganados
+    /*Devolver array con los juegos con ganador/perdedor solo
     int $ganados, $t
     */
     $ganados = 0;
@@ -433,18 +416,6 @@ function juegosOrdenadosDeO($algunosJuegos){
     }*/
 }
 
-/** Función para obtener la cantidad de ganados segun un simbolo (10)
- * @param string $jugadorRes
- * @param array $masJuegos
- * @return boolean
- */
-function jugadorExiste($jugadorRes, $masJuegos)
-{
-    // boolean $respuesta
-    $respuesta = in_array($jugadorRes, $masJuegos);
-    return $respuesta;
-}
-
 /**************************************/
 /*********** PROGRAMA PRINCIPAL *******/
 /**************************************/
@@ -524,19 +495,20 @@ do {
                     $jugadorResumen = trim(fgets(STDIN));
                     $jugadorResumen = strtoupper($jugadorResumen);
                     //Comprobar si el jugador existe
-                    $jugadorEx = jugadorExiste($jugadorResumen, $jugadosCrudo);
-                    if ($jugadorEx) {
+                    $l = 0;
+                    $bandera = true;
+                    do {
+                        if ($jugadosCrudo[$l]['jugadorCruz'] == $jugadorResumen) {
+                           $bandera = false;
+                        } elseif ($jugadosCrudo[$l]['jugadorCirculo'] == $jugadorResumen) {
+                            $bandera = false;
+                        }
+                        $l++;
+                    } while ($bandera && ($l < count($jugadosCrudo)));
+                    if ($bandera) {
                         echo "El jugador no posee registros.\n";
                     } else {
-                        $resumen = obtenerResumen($jugadosCrudo, $jugadorResumen);
-                        // Presentar por pantalla 
-                        echo "*****************************************\n";
-                        echo "Jugador: " . $resumen['jugador'] . " \n";
-                        echo "Ganó: " . $resumen['gano'] . " juegos \n";
-                        echo "Perdió: " . $resumen['perdio'] . " juegos\n";
-                        echo "Empató: " . $resumen['empato'] . " juegos\n";
-                        echo "Total de puntos acumulados: " . $resumen['puntos'] . " puntos\n";
-                        echo "*****************************************\n";
+                        obtenerResumen($jugadosCrudo, $jugadorResumen);
                     }
                 } else {
                     echo "No hay ningún juego registrado.\n";
@@ -557,6 +529,6 @@ do {
             default:
                 echo "Ingrese un número del 1 al 7.\n";
                 echo "\n";
-    }
-} while ($salir);
+        }
+    } while ($salir);
     
